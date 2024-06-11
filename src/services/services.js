@@ -15,24 +15,29 @@ export const createContact = async (payload) => {
     return data;
 }
 
-export const upsertContact = async (id, payload) => {
-    const rawResult = await contacts.findOneAndUpdate(
-        { _id: id },
-        payload,
-        {
-            new: true,
-            includeResultMetaData: true,
-            ...options
-        },
-    );
+const defaultOptions = {
+  new: true,
+  includeResultMetaData: true
+};
 
-    if (!rawResult || rawResult.value) return null;
+export const upsertContact = async (contactId, payload, options = {}) => {
+  const rawResult = await contacts.findOneAndUpdate(
+    { _id: contactId },
+    payload,
+    {
+      new: true,
+      includeResultMetadata: true,
+      ...options,
+    },
+  );
 
-    return {
-        contact: rawResult.value,
-        isNew: Boolean(rawResult?.lastErrorObject?.upsert)
-    }
-}
+  if (!rawResult || !rawResult.value) return null;
+
+  return {
+    contact: rawResult.value,
+    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+  };
+};
 
 export const deleteContact = async (id) => { 
     const data = await contacts.findOneAndDelete({ _id: id });

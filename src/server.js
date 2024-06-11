@@ -20,6 +20,8 @@ export const setupServer = () => {
         }
     });
 
+        app.use(express.json());
+
     app.use(expressPino({ logger }));
 
     app.use(contactsRouter)
