@@ -5,8 +5,8 @@ export const getContacts = async () => {
     return data;
 }
 
-export const getContactById = async (id) => {
-    const data = await contacts.findById(id);
+export const getContactById = async (contactId) => {
+    const data = await contacts.findById(contactId);
     return data;
 }
 
@@ -15,10 +15,7 @@ export const createContact = async (payload) => {
     return data;
 }
 
-const defaultOptions = {
-  new: true,
-  includeResultMetaData: true
-};
+
 
 export const upsertContact = async (contactId, payload, options = {}) => {
   const rawResult = await contacts.findOneAndUpdate(
@@ -39,7 +36,7 @@ export const upsertContact = async (contactId, payload, options = {}) => {
   };
 };
 
-export const deleteContact = async (id) => { 
-    const data = await contacts.findOneAndDelete({ _id: id });
+export const deleteContact = async (contactId) => { 
+    const data = await contacts.findOneAndDelete({ _id: contactId });
     return data;
 }
