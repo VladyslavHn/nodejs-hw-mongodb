@@ -3,8 +3,11 @@ import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { createContactController, deleteContactController, getContactByIdController, getContactsController, patchContactController } from '../controllers/contacts.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { createContactSchema, updateContactSchema } from '../validation/contacts.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const router = Router();
+
+router.use(authenticate);
 
 router.get('/contacts', ctrlWrapper(getContactsController));
 

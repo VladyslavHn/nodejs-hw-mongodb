@@ -6,6 +6,7 @@ import express from 'express';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import contactsRouter from './routers/contacts.js';
+import cookieParser from 'cookie-parser';
 
 const PORT = Number(env('PORT', '3000'));
 
@@ -13,6 +14,7 @@ export const setupServer = () => {
     const app = express();
     app.use(cors());
 
+ app.use(cookieParser());
 
     const logger = pino({
         transport: {
