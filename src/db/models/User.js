@@ -1,12 +1,17 @@
 import { model, Schema } from 'mongoose';
 
+// import { ROLES } from '../../constants/index.js';
+
 const usersSchema = new Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    createdAt: { type: Date },
-    updatedAt: { type: Date },
+    // role: {
+    //   type: String,
+    //   enum: [ROLES.PERSON],
+    //   default: ROLES.PERSON,
+    // },
   },
   { timestamps: true, versionKey: false },
 );
@@ -17,4 +22,4 @@ usersSchema.methods.toJSON = function () {
   return obj;
 };
 
-export const User = model('users', usersSchema);
+export const UsersCollection = model('users', usersSchema);

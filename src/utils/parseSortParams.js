@@ -1,7 +1,4 @@
-const SORT_ORDER = {
-  ASC: 'asc',
-  DESC: 'desc',
-};
+import { SORT_ORDER } from '../constants/index.js';
 
 const parseSortOrder = (sortOrder) => {
   const isKnownOrder = [SORT_ORDER.ASC, SORT_ORDER.DESC].includes(sortOrder);
@@ -15,6 +12,8 @@ const parseSortBy = (sortBy) => {
     'name',
     'phoneNumber',
     'email',
+    'isFavourite',
+    'contactType',
   ];
 
   if (keysOfStudent.includes(sortBy)) {

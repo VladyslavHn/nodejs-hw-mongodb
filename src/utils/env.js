@@ -1,10 +1,13 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
 
-export const env = (envVar, defaultValue) => {
-  const value = process.env[envVar];
+export function env(name, defaultValue) {
+  const value = process.env[name];
+
   if (value) return value;
+
   if (defaultValue) return defaultValue;
-  throw new Error(`Environment ${envVar} not found`);
-};
+
+  throw new Error(`Missing: process.env['${name}'].`);
+}

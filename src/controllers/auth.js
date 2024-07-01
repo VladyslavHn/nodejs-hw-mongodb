@@ -1,11 +1,8 @@
-import {
-  registerUser,
-  loginUser,
-  logoutUser,
-  refreshUsersSession,
-} from '../services/auth.js';
-
-const THIRTY_DAY = 24 * 30 * 60 * 60 * 1000;
+import { ONE_DAY } from '../constants/index.js';
+import { refreshUsersSession } from '../services/auth.js';
+import { logoutUser } from '../services/auth.js';
+import { loginUser } from '../services/auth.js';
+import { registerUser } from '../services/auth.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -17,27 +14,16 @@ export const registerUserController = async (req, res) => {
   });
 };
 
-const setupSession = (res, session) => {
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    expires: new Date(Date.now() + THIRTY_DAY),
-  });
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    expires: new Date(Date.now() + THIRTY_DAY),
-  });
-};
-
 export const loginUserController = async (req, res) => {
   const session = await loginUser(req.body);
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
-    expires: new Date(Date.now() + THIRTY_DAY),
+    expires: new Date(Date.now() + ONE_DAY),
   });
   res.cookie('sessionId', session._id, {
     httpOnly: true,
-    expires: new Date(Date.now() + THIRTY_DAY),
+    expires: new Date(Date.now() + ONE_DAY),
   });
 
   res.json({
@@ -50,7 +36,6 @@ export const loginUserController = async (req, res) => {
 };
 
 export const logoutUserController = async (req, res) => {
-  console.log(req.cookies.sessionId);
   if (req.cookies.sessionId) {
     await logoutUser(req.cookies.sessionId);
   }
@@ -59,6 +44,17 @@ export const logoutUserController = async (req, res) => {
   res.clearCookie('refreshToken');
 
   res.status(204).send();
+};
+
+const setupSession = (res, session) => {
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ONE_DAY),
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ONE_DAY),
+  });
 };
 
 export const refreshUserSessionController = async (req, res) => {
