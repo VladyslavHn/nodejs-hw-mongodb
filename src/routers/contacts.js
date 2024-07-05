@@ -18,7 +18,6 @@ import { validateMongoId } from '../middlewares/validateMongoId.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { upload } from '../middlewares/multer.js';
 
-
 const router = Router();
 
 router.use(authenticate);
@@ -27,15 +26,14 @@ router.get('/', ctrlWrapper(getContactsController));
 
 router.get(
   '/:contactId',
-  
   validateMongoId('contactId'),
   ctrlWrapper(getContactByIdController),
 );
 
 router.post(
   '/',
-  validateBody(createContactSchema),
   upload.single('photo'),
+  validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
 
@@ -46,17 +44,17 @@ router.delete(
 
 router.put(
   '/:contactId',
+  upload.single('photo'),
   validateBody(updateContactSchema),
   validateMongoId('contactId'),
-  upload.single('photo'),
   ctrlWrapper(upsertContactController),
 );
 
 router.patch(
   '/:contactId',
+  upload.single('photo'),
   validateBody(updateContactSchema),
   validateMongoId('contactId'),
-  upload.single('photo'),
   ctrlWrapper(patchContactController),
 );
 

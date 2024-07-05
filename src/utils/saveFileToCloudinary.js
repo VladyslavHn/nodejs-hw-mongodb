@@ -1,6 +1,7 @@
 import cloudinary from 'cloudinary';
+
 import { env } from './env.js';
-import { CLOUDINARY } from '../constants/index.js'; 
+import { CLOUDINARY } from '../constants/index.js';
 
 cloudinary.v2.config({
   secure: true,
@@ -10,12 +11,6 @@ cloudinary.v2.config({
 });
 
 export const saveFileToCloudinary = async (file) => {
-  try {
-    const response = await cloudinary.v2.uploader.upload(file.path);
-    return response.secure_url;
-  } catch (error) {
-    console.error('Cloudinary upload error:', error);
-    throw new Error('Failed to upload image to Cloudinary');
-  }
+  const response = await cloudinary.v2.uploader.upload(file.path);
+  return response.secure_url;
 };
-

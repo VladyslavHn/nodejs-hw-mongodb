@@ -10,9 +10,6 @@ const contactSchema = new Schema(
       type: String,
       required: true,
     },
-    photo: {
-      type: String,
-    },
     email: {
       type: String,
     },
@@ -27,6 +24,7 @@ const contactSchema = new Schema(
       default: 'personal',
     },
     personId: { type: Schema.Types.ObjectId, ref: 'users' },
+    photo: { type: String },
   },
   {
     timestamps: true,

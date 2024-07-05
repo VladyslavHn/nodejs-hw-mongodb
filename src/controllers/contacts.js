@@ -11,7 +11,6 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
-
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 import { env } from '../utils/env.js';
 
@@ -63,15 +62,15 @@ export const getContactByIdController = async (req, res, next) => {
 
 export const createContactController = async (req, res) => {
   const personId = req.user._id;
+  const photo = req.file;
+  let photoUrl = '';
+
   if (!req.body.name || !req.body.phoneNumber) {
     return res.status(400).json({
       status: 400,
       message: 'Name and phoneNumber are required fields.',
     });
   }
-
-  const photo = req.file;
-  let photoUrl;
 
   if (photo) {
     if (env('ENABLE_CLOUDINARY') === 'true') {
@@ -81,10 +80,12 @@ export const createContactController = async (req, res) => {
     }
   }
 
-  const contact = await createContact({
+  const contactPayload = {
     ...req.body,
     photo: photoUrl,
-  }, personId);
+  };
+
+  const contact = await createContact(contactPayload, personId);
 
   res.status(201).json({
     status: 201,
@@ -108,7 +109,23 @@ export const deleteContactController = async (req, res, next) => {
 export const upsertContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const personId = req.user._id;
-  const result = await updateContact(contactId, req.body, personId, {
+  const photo = req.file;
+  let photoUrl = '';
+
+  if (photo) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const updatePayload = {
+    ...req.body,
+    photo: photoUrl,
+  };
+
+  const result = await updateContact(contactId, updatePayload, personId, {
     upsert: true,
   });
 
@@ -128,9 +145,10 @@ export const upsertContactController = async (req, res, next) => {
 
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
-
+  const personId = req.user._id;
   const photo = req.file;
-  let photoUrl;
+
+  let photoUrl = '';
 
   if (photo) {
     if (env('ENABLE_CLOUDINARY') === 'true') {
@@ -140,11 +158,12 @@ export const patchContactController = async (req, res, next) => {
     }
   }
 
-  const personId = req.user._id;
-  const result = await updateContact(contactId, {
+  const updatePayload = {
     ...req.body,
-    photo: photoUrl,
-  }, personId);
+    photo: photoUrl || undefined,
+  };
+
+  const result = await updateContact(contactId, updatePayload, personId);
 
   if (!result) {
     next(createHttpError(404, 'Contact not found'));

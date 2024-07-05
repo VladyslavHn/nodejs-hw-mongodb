@@ -21,15 +21,6 @@ export const getAllContacts = async ({
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
 
-  // const contactsCount = await Contact.find()
-  //   .merge(contactsQuery)
-  //   .countDocuments();
-
-  // const contacts = await contactsQuery
-  //   .skip(skip)
-  //   .limit(limit)
-  //   .sort({ [sortBy]: sortOrder })
-  //   .exec();
 
   const [contactsCount, contacts] = await Promise.all([
     Contact.find({ personId }).merge(contactsQuery).countDocuments(),
@@ -71,6 +62,9 @@ export const updateContact = async (
   personId,
   options = {},
 ) => {
+  console.log('Person ID:', personId);
+  console.log('contactId:', contactId);
+
   const rawResult = await Contact.findOneAndUpdate(
     { _id: contactId, personId },
     payload,
